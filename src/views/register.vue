@@ -6,7 +6,7 @@
     </v-header>
     <section class="maya-reg-from" v-if="flag">
       <div class="mt-field">
-        <label>手机：</label><input type="tel" placeholder="">
+        <label>手机：</label><input type="tel" placeholder="" id="mobilePhone">
       </div>
       <div class="mt-field">
         <label>图片验证码：</label><input type="input" placeholder="">
@@ -15,10 +15,10 @@
         </div>
       </div>
       <div class="mt-field">
-        <label>手机验证码：</label><input type="input" placeholder="" ><input class="btnSendCode" type="button" value="获取验证码"  />
+        <label>手机验证码：</label><input type="input" placeholder="" id="verifyCode"><input class="btnSendCode" type="button" value="获取验证码"  />
       </div>
       <div class="mt-field">
-        <label>邀请码：</label><input type="input" placeholder="">
+        <label>邀请码：</label><input type="input" placeholder="" id="invitedCode">
       </div>
       <mt-button type="primary" class="maya-btn gradient" @click='flag = !flag'>下一步</mt-button>
     </section>
@@ -27,9 +27,9 @@
         <label>设置密码</label><input type="password"  placeholder="请输入6-18位字母＋数字组合"  value="" />
       </div>
       <div class="mt-field">
-        <label>确认密码</label><input type="password"  placeholder="请再一次输入新密码"  value="" />
+        <label>确认密码</label><input type="password"  placeholder="请再一次输入新密码"  value="" id="loginPassword"/>
       </div>
-      <mt-button type="primary" class="maya-btn ">提交</mt-button>
+      <mt-button type="primary" class="maya-btn " @click="MayaRegister">提交</mt-button>
     </section>
   </div>
 </template>
@@ -38,6 +38,8 @@
 import Header from '../common/_header'
 import Sidentify from '../components/identify'
 import { Toast } from 'mint-ui'
+import axios from 'axios'
+import '../api/index.js'
 export default {
   components: {
     'v-header': Header,
@@ -67,6 +69,26 @@ export default {
         this.identifyCode += this.identifyCodes[this.randomNum(0, this.identifyCodes.length)];
       }
       console.log(this.identifyCode);
+    },
+    MayaRegister () {
+      axios.post(api.loginByCode, data)
+        .then(res => {
+          console.log(res.data)
+          if (res.data.code === 0) {
+            this.$message({
+              showClose: true,
+              message: '注册成功',
+              type: 'success'
+            })
+            router.push({name: 'Login'})
+          } else {
+            this.$message({
+              showClose: true,
+              message: '注册失败',
+              type: 'error'
+            })
+          }
+        })
     }
   }
 
