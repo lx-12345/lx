@@ -1,9 +1,11 @@
-const baseURL = "https://192.168.0.105:8087/";  // 测试环境
+const baseURL = 'https://192.168.0.105:8087/'
 // const baseURL = "https://pre-www.huiyuntong.com/app/login/"  //测试环境
 
 const api = {
-  loginByCode: baseURL + 'siteuser/v1/register', // 注册接口
-  loginBySendTel: baseURL + '/siteuser/v1/login'
-};
+  register: baseURL + 'siteuser/v1/register', // 注册接口
+  login: baseURL + '/siteuser/v1/login',
+  version: 1,
+  secrtKey: 'abcabc'
+}
 
 export default api
