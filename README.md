@@ -1,6 +1,6 @@
-# maya
+# m-maya
 
-> maya_mall_wap
+> maya shop vue m
 
 ## Build Setup
 

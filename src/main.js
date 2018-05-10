@@ -1,19 +1,22 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import Vuex from 'vuex'
-import MintUI from 'mint-ui'
-import 'mint-ui/lib/style.css'
+import router from './router'
 import App from './App'
-import router from 'vue-router'
-
-Vue.config.productionTip = false
+import MintUI from 'mint-ui'
+import SIdentify from './components/identify'
+import './utils/rem.js'
+import 'mint-ui/lib/style.css'
+import './assets/css/reset.css'
+import './assets/css/common.css'
+Vue.use(SIdentify)
 Vue.use(MintUI)
-Vue.use(Vuex)
+Vue.config.productionTip = false
 /* eslint-disable no-new */
+
 new Vue({
   el: '#app',
   router,
-  components: { App },
-  template: '<App/>'
-})
+  template: '<App/>',
+  components: { App }
+});
