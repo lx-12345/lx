@@ -4,33 +4,29 @@
     <v-header>
       <h1 slot="title">注册</h1>
     </v-header>
-    <section class="maya-reg-from" v-if="flag">
+    <section class="maya-reg-from">
       <div class="mt-field">
-        <label>手机：</label><input type="tel" placeholder="" id="mobilePhone">
+        <label>手机：</label><input type="tel" placeholder=""  v-model="mobilePhone" value="" @blur='mobilePhone '>
       </div>
       <div class="mt-field">
-        <label>图片验证码：</label><input type="input" placeholder="">
+        <label>图片验证码：</label><input type="input" placeholder="" v-model="GraphicCode">
         <div class="code" @click="refreshCode">
           <s-identify :identifyCode="identifyCode"></s-identify>
         </div>
       </div>
       <div class="mt-field">
-        <label>手机验证码：</label><input type="input" placeholder="" id="verifyCode"><input class="btnSendCode" type="button"
-                                                                                       value="获取验证码"/>
+        <label>手机验证码：</label><input type="input" placeholder="" id="verifyCode" v-model="verifyCode"><input class="btnSendCode" type="button" value="获取验证码"/>
       </div>
       <div class="mt-field">
-        <label>邀请码：</label><input type="input" placeholder="" id="invitedCode">
+        <label>邀请码：</label><input type="input" placeholder="" id="invitedCode" v-model="invitedCode">
       </div>
-      <mt-button type="primary" class="maya-btn gradient" @click='flag = !flag'>下一步</mt-button>
-    </section>
-    <section class="maya-reg-from maya-reg-from2" v-if='!flag'>
-      <div class="mt-field">
-        <label>设置密码</label><input type="password" placeholder="请输入6-18位字母＋数字组合" value=""/>
+      <div class="mt-field mt-field2">
+        <label>设置密码</label><input type="password" placeholder="请输入6-18位字母＋数字组合" value="" v-model="loginPassword" @blur='loginPassword()' />
       </div>
-      <div class="mt-field">
-        <label>确认密码</label><input type="password" placeholder="请再一次输入新密码" value="" id="loginPassword"/>
+      <div class="mt-field mt-field2">
+        <label>确认密码</label><input type="password" placeholder="请再一次输入新密码" value=""  @blur='loginPasswordm()'/>
       </div>
-      <mt-button type="primary" class="maya-btn " @click="MayaRegister">提交</mt-button>
+      <mt-button type="primary" class="maya-btn" @click="MayaRegister">提交</mt-button>
     </section>
   </div>
 </template>
@@ -38,9 +34,12 @@
 <script>
   import Header from '../common/_header'
   import Sidentify from '../components/identify'
-  import { Toast } from 'mint-ui'
-  import axios from 'axios'
+  import { Toast } from 'mint-ui'; // 提示框
+  import axios from '../utils/request'
   import api from '../api/index.js'
+  // import AES from 'crypto-js/aes'
+  // import MD5 from 'crypto-js/md5'
+  // import {encryption} from '../utils/my-crypto-js'
 
   export default {
     components: {
@@ -48,10 +47,45 @@
       's-identify': Sidentify
     },
     data () {
+      const loginPassword = (rule, value, callback) => {
+        const pattern = /^[a-zA-Z0-9]{6,18}$/g;
+        if (value === '') {
+          callback(Toast('请输入密码'));
+        } else {
+          if (!pattern.test(value)) {
+            callback(Toast('请输入6-18位字母＋数字组合'));
+          }
+          callback();
+        }
+      };
+      const loginPasswordm = (rule, value, callback) => {
+        if (value === '') {
+          callback(Toast('请再次输入密码'))
+        } else if (value !== this.loginPassword) {
+          callback(Toast('两次输入密码不一致!'))
+        } else {
+          callback()
+        }
+      };
+      const mobilePhone = (rule, value, callback) => {
+        const reg = /^[1][3,4,5,7,8][0-9]{9}$/g;
+        if (this.mobilePhone === '') {
+          Toast('请输入手机号');
+        } else if (!reg.test(this.mobilePhone)) {
+          Toast('手机号码格式不正确');
+        } else {
+          callback()
+        }
+      }
       return {
         identifyCodes: 'abcdefghijklmnopqrstuvwxyz',
         identifyCode: '',
-        flag: true
+        mobilePhone: '',
+        GraphicCode: '',
+        verifyCode : '',
+        invitedCode : '',
+        loginPassword : ''
+
       }
     },
     mounted () {
@@ -73,15 +107,6 @@
         console.log(this.identifyCode)
       },
       MayaRegister () {
-        const data = {}
-
-        if (this.flag) {
-          Toast('abcc')
-          return
-        }
-
-//        return
-
         axios.post(api.loginByCode, data)
           .then(res => {
             console.log(res.data)
@@ -100,9 +125,8 @@
               })
             }
           })
-      }
+        }
     }
-
   }
 </script>
 
@@ -180,8 +204,7 @@
     background: -ms-linear-gradient(left, #c155ee 0%, #9857fc 100%);
     background: linear-gradient(to right, #c155ee 0%, #9857fc 100%);
   }
-
-  .maya-reg-from2 .mt-field input {
+  .mt-field2 input {
     width: 4rem;
   }
 

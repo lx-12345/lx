@@ -6,13 +6,13 @@
     <section class="maya-login-from">
       <div class="mt-filed-log">
         <label></label>
-        <input type="text" v-model="mobile" @keyup="changeStyle()" placeholder="请输入您的手机号">
+        <input type="text" v-model="loginName" @keyup="changeStyle()" placeholder="请输入您的手机号">
       </div>
       <div class="mt-filed-log">
         <label></label>
-        <input type="password" v-model="pwd" @keyup="changeStyle()" placeholder="请输入您的登录密码">
+        <input type="password" v-model="loginPassword" @keyup="changeStyle()" placeholder="请输入您的登录密码">
       </div>
-      <mt-button type="primary" class="maya-login-btn" :class="gradient" @click="login">登录</mt-button>
+      <mt-button type="primary" class="maya-login-btn" :class="gradient" @click='MayaLogin'>登录</mt-button>
       <!--<mt-field label="账号" placeholder="请输入你的手机号" type = "text" :readonly = '!toggle' :disableClear = '!toggle' v-model = "account"></mt-field>
       <mt-field label="密码" placeholder="请输入密码" type="password" :readonly='!toggle' :disableClear = '!toggle'></mt-field>-->
       <section class="maya-login-link">
@@ -24,27 +24,28 @@
 </template>
 
 <script>
-  import { MessageBox } from 'mint-ui' // 提示框
-  import request from '../utils/request'
+  import {MessageBox} from 'mint-ui' // 提示框
+  import axios from '../utils/request'
   import api from '../api/index.js'
-  import AES from 'crypto-js/aes'
-  import MD5 from 'crypto-js/md5'
+  // import AES from 'crypto-js/aes'
+  // import MD5 from 'crypto-js/md5'
+  import {encryption} from '../utils/my-crypto-js'
 
   export default {
-
     data () {
       return {
         gradient: '', // gradient
-        mobile: '',
-        pwd: ''
+        loginName: '',
+        loginPassword: ''
       }
     },
     methods: {
-      login () {
-        if (!this.mobile || !this.pwd) {
+      MayaLogin () {
+        // console.log(api);
+        // const secrtKey = api.secrtKey;
+        if (!this.loginName || !this.loginPassword) {
           return
         }
-
         const data = {
           'version': api.version,
           'timeStamp': '',
@@ -52,22 +53,16 @@
             'loginName': this.mobile,
             'loginPassword': this.pwd
           }
-        }
-        const aesData = AES.encrypt(data, api.secrtKey)
-        const sign = MD5.encrypt(data)
-
-        const resultData = {
-          version: api.version,
-          timeStamp: '',
-          data: aesData,
-          sign: sign
-        }
-
-        request.post(api.login, resultData)
+        };
+        console.log('data', data);
+        const resultData = encryption(data); // AES.encrypt(data, api.secrtKey);
+        console.log(resultData);
+        console.log(api.login)
+        axios.post(api.login, resultData)
           .then(res => {
-            console.log(res)
+            console.log(res);
             if (res.status === 200) {
-              const result = res.data
+              const result = res.data;
               if (result.result_code === 200) {
                 // 设置cookie ...
                 // 跳转到首页 ...
@@ -79,16 +74,14 @@
               }
             }
           }).catch(err => {
-          console.log(err)
-        })
-
-        MessageBox({
-          title: '登录失败',
-          message: '账号或密码错误，请重新输入'
-        })
+          MessageBox({
+            title: '登录失败',
+            message: '接口异常：' + err
+          })
+        });
       },
       changeStyle () {
-        if (this.mobile && this.pwd) {
+        if (this.loginPassword && this.loginName) {
           this.gradient = 'gradient'
         } else {
           this.gradient = ''
