@@ -11,7 +11,7 @@ import 'mint-ui/lib/style.css'
 import './assets/css/reset.css'
 import './assets/css/common.css'
 Vue.use(SIdentify)
-Vue.use(MintUI)
+Vue.use(MintUI)  
 Vue.config.productionTip = false
 /* eslint-disable no-new */
 
