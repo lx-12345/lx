@@ -1,33 +1,30 @@
 <template>
-  <!--注册页面-->
+  <!--忘记密码-->
   <div>
     <v-header>
-      <h1 slot="title">注册</h1>
+      <h1 slot="title">忘记密码</h1>
     </v-header>
     <section class="maya-reg-from">
       <div class="mt-field">
-        <label>手机：</label><input type="tel" placeholder=""  v-model="mobilePhone" value="">
+        <label>手机：</label><input type="tel" placeholder=""  v-model="mobilePhone" value="" @keyup='changeStyle'>
       </div>
       <div class="mt-field">
-        <label>图片验证码：</label><input type="input" placeholder="" v-model="GraphicCode">
+        <label>图片验证码：</label><input type="input" placeholder="" v-model="GraphicCode" @keyup='changeStyle'>
         <div class="code" @click="refreshCode">
           <s-identify :identifyCode="identifyCode"></s-identify>
         </div>
       </div>
       <div class="mt-field">
-        <label>手机验证码：</label><input type="input" placeholder="" id="verifyCode" v-model="verifyCode"><input class="btnSendCode" type="button" value="获取验证码"/>
-      </div>
-      <div class="mt-field">
-        <label>邀请码：</label><input type="input" placeholder="" id="invitedCode" v-model="invitedCode">
+        <label>手机验证码：</label><input type="input" placeholder="" id="verifyCode" v-model="verifyCode"><input class="btnSendCode" type="button" value="获取验证码" @keyup='changeStyle'/>
       </div>
       <div class="mt-field mt-field2">
-        <label>设置密码</label><input type="password" placeholder="请输入6-18位字母＋数字组合" value="" v-model="loginPassword" />
+        <label>设置新密码</label><input type="password" placeholder="请输入6-18位字母＋数字组合" value="" v-model="newloginPassword" @keyup='changeStyle'/>
       </div>
       <div class="mt-field mt-field2">
-        <label>确认密码</label><input type="password" placeholder="请再一次输入新密码" value="" />
+        <label>确认新密码</label><input type="password" placeholder="请再一次输入新密码" value="" v-model="newloginPassword2" @keyup='changeStyle'/>
       </div>
     </section>
-    <mt-button type="primary" class="maya-btn" @click="MayaRegister">提交</mt-button>
+    <mt-button type="primary" class="maya-btn" :class='gradient' @click="MayaRegister">提交</mt-button>
   </div>
 </template>
 
@@ -35,12 +32,6 @@
   import Header from '../common/_header'
   import Sidentify from '../components/identify'
   import '../assets/css/maya-form.css'
-  // import { Toast } from 'mint-ui'; // 提示框
-  // import axios from '../utils/request'
-  // import api from '../api/index.js'
-  // import AES from 'crypto-js/aes'
-  // import MD5 from 'crypto-js/md5'
-  // import {encryption} from '../utils/my-crypto-js'
   export default {
     components: {
       'v-header': Header,
@@ -48,13 +39,14 @@
     },
     data () {
       return {
+        gradient: '',
         identifyCodes: 'abcdefghijklmnopqrstuvwxyz',
         identifyCode: '',
         mobilePhone: '',
         GraphicCode: '',
-        loginPassword: '',
         verifyCode: '',
-        invitedCode: ''
+        newloginPassword: '',
+        newloginPassword2: ''
       }
     },
     mounted () {
@@ -77,10 +69,16 @@
       },
       MayaRegister () {
         alert('123')
+      },
+      changeStyle () {
+        if (this.mobilePhone && this.GraphicCode && this.verifyCode && this.newloginPassword && this.newloginPassword2) {
+          this.gradient = 'gradient'
+        } else {
+          this.gradient = ''
         }
+      }
     }
   }
 </script>
-
 <style>
 </style>
