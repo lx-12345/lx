@@ -29,7 +29,9 @@
         <label>确认密码</label><input type="password" placeholder="请再一次输入新密码" value="" v-model="loginPassword" @blur='vloginPassword2'/>
       </div>
       <mt-button type="primary" class="maya-btn" @click='MayaRegister'>提交</mt-button>
+
     </section>
+    <mt-button type="primary" class="maya-btn" @click="MayaRegister">提交</mt-button>
   </div>
 </template>
 
@@ -39,10 +41,11 @@
   import { Toast } from 'mint-ui' // 提示框
   import axios from '../utils/request'
   import api from '../api/index.js'
+  import '../assets/css/maya-form.css'
+
   // import AES from 'crypto-js/aes'
   // import MD5 from 'crypto-js/md5'
   // import {encryption} from '../utils/my-crypto-js'
-
   export default {
     components: {
       'v-header': Header,
@@ -155,87 +158,11 @@
             }
           })
       }
+
     }
   }
 </script>
 
 <style>
-  .maya-reg-from {
-    padding: 0 0.2rem;
-    margin-bottom: 1rem
-  }
-
-  .mt-field {
-    height: 1rem;
-    position: relative;
-    color: #181818;
-    line-height: 1rem;
-    font-size: 0.28rem;
-    border-bottom: thin solid #e5e5e5;
-    padding: 0 0.2rem;
-  }
-
-  .mt-field label {
-    width: 1.86rem;
-    display: inline-block;
-  }
-
-  .mt-field input {
-    width: 3rem;
-  }
-
-  .maya-btn {
-    width: 6.9rem;
-    height: 0.8rem;
-    text-align: center;
-    border: none;
-    background: #e0e0e0;
-  }
-
-  .mt-field .btnSendCode {
-    position: absolute;
-    display: block;
-    right: 0.2rem;
-    height: 0.32rem;
-    line-height: 0.32rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border-left: thin solid #8e57ff;
-    color: #8e57ff;
-    text-align: right;
-    width: 1.75rem;
-  }
-
-  .code {
-    height: 34px;
-    position: absolute;
-    right: 0.2rem;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  .s-canvas {
-    height: 34px;
-    top: 50%;
-  }
-
-  .mint-field-core {
-    font-size: 0.28rem;
-    color: #181818;
-  }
-
-  .gradient {
-    background: -moz-linear-gradient(left, #c155ee 0%, #9857fc 100%);
-    background: -webkit-gradient(linear, top left, top right, color-stop(0%, #c155ee), color-stop(100%, #9857fc));
-    background: -webkit-linear-gradient(left, #c155ee 0%, #ffffff 100%);
-    background: -o-linear-gradient(left, #c155ee 0%, #9857fc 100%);
-    background: -ms-linear-gradient(left, #c155ee 0%, #9857fc 100%);
-    background: linear-gradient(to right, #c155ee 0%, #9857fc 100%);
-  }
-
-  .mt-field2 input {
-    width: 4rem;
-  }
 
 </style>

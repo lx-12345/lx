@@ -6,11 +6,11 @@
     <section class="maya-login-from">
       <div class="mt-filed-log">
         <label></label>
-        <input type="text" v-model="loginName" @keyup="changeStyle()" placeholder="请输入您的手机号">
+        <input type="text" v-model="loginName" @keyup='changeStyle' placeholder="请输入您的手机号">
       </div>
       <div class="mt-filed-log">
         <label></label>
-        <input type="password" v-model="loginPassword" @keyup="changeStyle()" placeholder="请输入您的登录密码">
+        <input type="password" v-model="loginPassword" @keyup='changeStyle' placeholder="请输入您的登录密码">
       </div>
       <mt-button type="primary" class="maya-login-btn" :class="gradient" @click='MayaLogin'>登录</mt-button>
       <!--<mt-field label="账号" placeholder="请输入你的手机号" type = "text" :readonly = '!toggle' :disableClear = '!toggle' v-model = "account"></mt-field>
@@ -47,18 +47,19 @@
           return
         }
         const data = {
-          'version': api.version,
-          'timeStamp': '',
-          'data': {
-            'loginName': this.mobile,
-            'loginPassword': this.pwd
-          }
+          data: encryption({
+            'loginName': this.loginName,
+            'loginPassword': this.loginPassword
+          }),
+          timeStamp: '2018-05-12 00:00:00',
+          version: api.version,
+          sign: encryption('KEY')
         };
-        console.log('data', data);
-        const resultData = encryption(data); // AES.encrypt(data, api.secrtKey);
-        console.log(resultData);
+        console.log(data);
+        // const resultData = encryption('?version=1 &timeStamp=2017-12-08 18:18:09 &data=' + 'data.data&sign=' + 'api.secrtKey'); // AES.encrypt(data, api.secrtKey);
+        //  console.log(resultData);
         console.log(api.login)
-        axios.post(api.login, resultData)
+        axios.post(api.login, data)
           .then(res => {
             console.log(res);
             if (res.status === 200) {
@@ -68,14 +69,14 @@
                 // 跳转到首页 ...
               } else {
                 MessageBox({
-                  title: '登录失败',
+                  title: '登录失败1',
                   message: result.result_info
                 })
               }
             }
           }).catch(err => {
           MessageBox({
-            title: '登录失败',
+            title: '登录失败2',
             message: '接口异常：' + err
           })
         });

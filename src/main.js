@@ -11,10 +11,9 @@ import 'mint-ui/lib/style.css'
 import './assets/css/reset.css'
 import './assets/css/common.css'
 Vue.use(SIdentify)
-Vue.use(MintUI)  
+Vue.use(MintUI)
 Vue.config.productionTip = false
 /* eslint-disable no-new */
-
 // 用钩子函数beforeEach()对路由进行判断
 
 // router.beforeEach((to, from, next) => {

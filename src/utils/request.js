@@ -1,10 +1,8 @@
 import axios from 'axios'
 // import {message} from 'antd';
 // import browserCookie from 'browser-cookies';
-
-axios.defaults.timeout = 5000
+axios.defaults.timeout = 5000;
 // axios.defaults.baseURL = 'http://10.99.206.102:8084';
-
 axios.interceptors.request.use(function (config) {
   // 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
   // 'Content-Type': 'application/json;charset=UTF-8'
@@ -16,7 +14,6 @@ axios.interceptors.request.use(function (config) {
   // }
   return config
 })
-
 axios.interceptors.response.use(function (config) {
   // if (config.data.code === -1) {
   //   browserCookie.erase('current_user');
@@ -26,3 +23,4 @@ axios.interceptors.response.use(function (config) {
 })
 
 export default axios
+
