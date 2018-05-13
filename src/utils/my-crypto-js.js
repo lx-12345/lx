@@ -1,23 +1,25 @@
 import CryptoJS from 'crypto-js/crypto-js'
 
 export function encryption (data) {
-
   let strs = []
   for (let i in data) {
     strs.push(i + '=' + data[i])
   }
   strs.sort()
   strs = strs.join('&')
-  let endData = strs + '&sign=' + CryptoJS.MD5(strs + 'KEY')
+  let endData = strs
     .toString() // MD5加密
+  console.log(endData)
+  strs = 'data={loginName:18701532234,loginPassword:zhouxiangnan2}&timeStamp=2018-01-25 12:32:21&version=1'
   let key = CryptoJS.enc.Utf8.parse('abcdefgabcdefg12')
-  let iv = CryptoJS.enc.Utf8.parse('CB3EC842D7C69578')
+  let iv = CryptoJS.enc.Utf8.parse('AES')
+  //  AES/ECB/PKCS5Padding
   let encryptResult = CryptoJS.AES.encrypt(endData, key, {
     iv: iv,
-    mode: CryptoJS.mode.CBC,
+    mode: CryptoJS.mode.ECB,
     padding: CryptoJS.pad.Pkcs7
   })
-  return encodeURIComponent(CryptoJS.enc.Base64.stringify(encryptResult.ciphertext))
+  return encryptResult.ciphertext + '&sign=' + CryptoJS.MD5(strs + 'KEY')
   // // strs.sort(); // 数组排序
   // strs = strs.join('&'); // 数组变字符串
   // /* let endData = strs + '&sign=' + CryptoJS.MD5(strs + 'KEY')
@@ -34,6 +36,7 @@ export function encryption (data) {
   // // return encodeURIComponent(CryptoJS.enc.Base64.stringify(encryptResult.ciphertext)); // Base64加密再 encode;
   // return encodeURIComponent(encryptResult) // Base64加密再 encode;
 }
+
 // export function decryption(data) {
 //   let key = CryptoJS.enc.Utf8.parse("0880076B18D7EE81");  // 加密秘钥
 //   let iv = CryptoJS.enc.Utf8.parse("CB3EC842D7C69578");   //  矢量

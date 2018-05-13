@@ -24,12 +24,12 @@
 </template>
 
 <script>
-  import {MessageBox} from 'mint-ui' // 提示框
+  import { MessageBox } from 'mint-ui' // 提示框
   import axios from '../utils/request'
   import api from '../api/index.js'
   // import AES from 'crypto-js/aes'
   // import MD5 from 'crypto-js/md5'
-  import {encryption} from '../utils/my-crypto-js'
+  import { encryption } from '../utils/my-crypto-js'
 
   export default {
     data () {
@@ -47,23 +47,20 @@
           return
         }
         const data = {
-          data: encryption({
-            'loginName': this.loginName,
-            'loginPassword': this.loginPassword
-          }),
-          timeStamp: '2018-05-12 00:00:00',
-          version: api.version,
-          sign: encryption('KEY')
-        };
-        console.log(data);
-        // const resultData = encryption('?version=1 &timeStamp=2017-12-08 18:18:09 &data=' + 'data.data&sign=' + 'api.secrtKey'); // AES.encrypt(data, api.secrtKey);
-        //  console.log(resultData);
+          loginName: this.loginName,
+          loginPassword: this.loginPassword,
+          timeStamp: '2018-01-25 12:32:21',
+          version: api.version
+        }
+        console.log(data)
+        const resultData = encryption(data) // AES.encrypt(data, api.secrtKey);
+        console.log(resultData)
         console.log(api.login)
         axios.post(api.login, data)
           .then(res => {
-            console.log(res);
+            console.log(res)
             if (res.status === 200) {
-              const result = res.data;
+              const result = res.data
               if (result.result_code === 200) {
                 // 设置cookie ...
                 // 跳转到首页 ...
@@ -79,7 +76,7 @@
             title: '登录失败2',
             message: '接口异常：' + err
           })
-        });
+        })
       },
       changeStyle () {
         if (this.loginPassword && this.loginName) {
@@ -94,6 +91,10 @@
 </script>
 
 <style scoped>
+  input:-webkit-autofill {
+    background: none !important;
+  }
+
   .maya-login {
     width: 100%;
     height: 100vh;

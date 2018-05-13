@@ -26,10 +26,8 @@
       />
       </div>
       <div class="mt-field mt-field2">
-        <label>确认密码</label><input type="password" placeholder="请再一次输入新密码" value="" v-model="loginPassword" @blur='vloginPassword2'/>
+        <label>确认密码</label><input type="password" placeholder="请再一次输入新密码" value="" v-model="loginPassword2" @blur='vloginPassword2'/>
       </div>
-      <mt-button type="primary" class="maya-btn" @click='MayaRegister'>提交</mt-button>
-
     </section>
     <mt-button type="primary" class="maya-btn" @click="MayaRegister">提交</mt-button>
   </div>
@@ -157,8 +155,14 @@
               })
             }
           })
+      },
+      changeStyle () {
+        if (this.mobilePhone && this.GraphicCode && this.verifyCode && this.newloginPassword && this.newloginPassword2) {
+          this.gradient = 'gradient'
+        } else {
+          this.gradient = ''
+        }
       }
-
     }
   }
 </script>

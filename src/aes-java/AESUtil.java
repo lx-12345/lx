@@ -13,7 +13,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class AESUtil {
 
-    static final String algorithmStr = "AES/ECB/PKCS5Padding";
+      static final String algorithmStr = "AES/ECB/PKCS5Padding";
 
     private static final String TAG = "AES";
 
