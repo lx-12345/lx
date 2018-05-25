@@ -31,7 +31,6 @@ Vue.config.productionTip = false
 //     next();
 //   }
 // })
-
 new Vue({
   el: '#app',
   router,

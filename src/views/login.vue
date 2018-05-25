@@ -6,7 +6,7 @@
     <section class="maya-login-from">
       <div class="mt-filed-log">
         <label></label>
-        <input type="text" v-model="loginName" @keyup='changeStyle' placeholder="请输入您的手机号">
+        <input type="number" v-model="loginName" @keyup='changeStyle' placeholder="请输入您的手机号">
       </div>
       <div class="mt-filed-log">
         <label></label>
@@ -17,9 +17,13 @@
       <mt-field label="密码" placeholder="请输入密码" type="password" :readonly='!toggle' :disableClear = '!toggle'></mt-field>-->
       <section class="maya-login-link">
         <router-link to="/register"><span>注册</span></router-link>
-        <b>忘记密码?</b>
+        <router-link to="/forgetpsd"><b>忘记密码?</b></router-link>
       </section>
     </section>
+    <!--<div class="login-way">-->
+      <!--<p><img src="../assets/image/qt-login.png" alt=""></p>-->
+      <!--<div class="login-wx"><img src="../assets/image/wx-login.png" alt=""></div>-->
+    <!--</div>-->
   </div>
 </template>
 
@@ -28,7 +32,7 @@
   import axios from '../utils/request'
   import api from '../api/index.js'
   // import AES from 'crypto-js/aes'
-  // import MD5 from 'crypto-js/md5'
+  import md5 from 'crypto-js/md5'
   import { encryption } from '../utils/my-crypto-js'
 
   export default {
@@ -36,48 +40,76 @@
       return {
         gradient: '', // gradient
         loginName: '',
-        loginPassword: ''
+        loginPassword: '',
+        timeStamp: '2018-01-25 12:32:21',
+        version: api.version
       }
     },
     methods: {
       MayaLogin () {
         // console.log(api);
         // const secrtKey = api.secrtKey;
-        if (!this.loginName || !this.loginPassword) {
-          return
-        }
+        const myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+        const loginPass = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,18}$/;
+        const logintell = this.loginName
+        const loginPassword = this.loginPassword
         const data = {
-          loginName: this.loginName,
-          loginPassword: this.loginPassword,
-          timeStamp: '2018-01-25 12:32:21',
-          version: api.version
-        }
-        console.log(data)
-        const resultData = encryption(data) // AES.encrypt(data, api.secrtKey);
-        console.log(resultData)
-        console.log(api.login)
-        axios.post(api.login, data)
-          .then(res => {
-            console.log(res)
-            if (res.status === 200) {
-              const result = res.data
-              if (result.result_code === 200) {
-                // 设置cookie ...
-                // 跳转到首页 ...
-              } else {
-                MessageBox({
-                  title: '登录失败1',
-                  message: result.result_info
-                })
-              }
-            }
-          }).catch(err => {
+            loginName: this.loginName,
+            loginPassword: this.loginPassword
+        };
+        // aes 加密
+        console.log(JSON.stringify(data));
+        let phoneDatas = encryption(JSON.stringify(data));
+        let AfterEncryption = phoneDatas.ciphertext.toString().toUpperCase();
+        console.log(AfterEncryption)// 加密后的串
+        console.log(AfterEncryption)
+        // 签名 (传到后台的数据 = (加密后的data+时间戳 + 版本号) +"&" + 'sign=' + md5((加密后的data+时间戳 + 版本号)+key)  )
+        let signatureObj = 'data=' + AfterEncryption + '&' + 'timeStamp=' + '2018-01-25 12:32:21' + '&' + 'version=' + api.version
+        const signsi = signatureObj + 'b2693d9c2124f3ca9547b897794ac6a1'
+        const dataSifn = md5(signsi);// MD5加密
+        const uData = signatureObj + '&' + 'sign=' + dataSifn
+        if (!myreg.test(logintell)) {
           MessageBox({
-            title: '登录失败2',
-            message: '接口异常：' + err
+            title: '提示信息',
+            message: '请输入正确的手机号：'
           })
-        })
-      },
+          return false;
+        } else {
+          if (!loginPass.test(loginPassword)) {
+            MessageBox({
+              title: '提示信息',
+              message: '请输入6到18位数字和字母组成'
+            })
+          } else {
+            axios.post(api.login, uData)
+              .then(res => {
+                console.log(res)
+                if (res.status === 200) {
+                  const result = res.data
+                  if (result.result_code === '200') {
+                    // 设置cookie ...
+                    // 跳转到首页 ...
+                    window.location.href = 'downloadPrompt'
+                  } else {
+                    MessageBox({
+                      title: '登录失败1',
+                      message: result.result_info
+                    })
+                  }
+                }
+              }).catch(err => {
+              MessageBox({
+                title: '登录失败2',
+                message: '接口异常：' + err
+              })
+            })
+            return true
+          }
+        }
+        // if (!this.loginName || !this.loginPassword) {
+        //   return
+        // }
+        },
       changeStyle () {
         if (this.loginPassword && this.loginName) {
           this.gradient = 'gradient'
@@ -137,6 +169,8 @@
     width: 0.6rem;
     height: 100%;
     background: #ae95bc;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
   }
 
   .mt-filed-log label:after {
@@ -163,7 +197,7 @@
 
   .mt-filed-log input {
     padding-left: 0.3rem;
-    color: #ffffff;
+    color: #fff;
     background: none;
   }
 
@@ -208,5 +242,19 @@
     width: 0.26rem;
     height: 0.24rem;
     background-position: 0 -0.76rem;
+  }
+  .login-way p{
+    width: 5rem;
+    margin: 0 auto;
+  }
+  .login-way p img{
+    width: 100%;
+  }
+  .login-way .login-wx{
+    text-align: center;
+  }
+  .login-way .login-wx img{
+    width: 50px;
+    margin-top: -65px;
   }
 </style>
